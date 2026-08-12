@@ -1,0 +1,14 @@
+# Neovim swap, backup, and undo files
+*.swp
+*.swo
+*.swn
+*~
+.netrwhist
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Lua / Neovim specific
+.luarc.json
+doc/tags

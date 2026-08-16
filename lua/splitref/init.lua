@@ -12,19 +12,21 @@ local hl_bg = "#1b454c"
 ---@param line1? integer start line (1-indexed)
 ---@param line2? integer end line (1-indexed)
 function M.split_ref(line1, line2)
-  -- If no lines provided, try the visual selection, else use current line
+  -- If no lines provided, check current mode: if in visual mode use selection, else use current cursor line
   if not line1 or not line2 then
     local mode = vim.fn.mode()
     if mode == "v" or mode == "V" or mode == "\22" then
       -- Exit visual mode so the '< and '> marks are set
       vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "nx", false)
+      local vstart = vim.fn.getpos("'<")
+      local vend = vim.fn.getpos("'>")
+      if vstart[2] > 0 and vend[2] > 0 and vstart[2] <= vend[2] then
+        line1 = vstart[2]
+        line2 = vend[2]
+      end
     end
-    local vstart = vim.fn.getpos("'<")
-    local vend = vim.fn.getpos("'>")
-    if vstart[2] > 0 and vend[2] > 0 and vstart[2] <= vend[2] then
-      line1 = vstart[2]
-      line2 = vend[2]
-    else
+
+    if not line1 or not line2 then
       local cur = vim.api.nvim_win_get_cursor(0)
       line1 = cur[1]
       line2 = cur[1]

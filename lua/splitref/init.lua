@@ -108,13 +108,14 @@ function M.split_ref(line1, line2)
 	vim.bo[new_buf].modifiable = false
 	vim.b[new_buf].snacks_animate_indent = false
 
-	-- Position cursor on the last character of the highlight line and center
-	vim.api.nvim_win_set_cursor(new_win, { line1, 0 })
+	-- Position cursor on the middle point of the highlighted lines and center
+	local mid_line = math.floor((line1 + line2) / 2)
+	vim.api.nvim_win_set_cursor(new_win, { mid_line, 0 })
 	vim.cmd("normal! $zz")
 	local cur = vim.api.nvim_win_get_cursor(new_win)
 
 	-- Track the new window
-	table.insert(marked_wins, { win = new_win, line = line1, col = cur[2] })
+	table.insert(marked_wins, { win = new_win, line = mid_line, col = cur[2] })
 
 	-- Disable gutter elements
 	vim.wo[new_win].number = false
